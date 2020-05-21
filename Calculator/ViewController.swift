@@ -7,35 +7,70 @@
 //
 
 import UIKit
+import Foundation
 
 class ViewController: UIViewController {
-    var num = ""
-    var isFinishTypingNumber = true
+    
+    private var isFinishTypingNumber = true
+    
+    private var displayValue : Double {
+        get {
+            guard let number = Double(displayLabel.text!) else {
+                print("can not convert into number")
+                return 0
+            }
+            return number
+        }
+        
+        set {
+            displayLabel.text = String(newValue)
+        }
+        
+    }
     
     @IBOutlet weak var displayLabel: UILabel!
-     
     
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
-        isFinishTypingNumber = false
-        if let sign = sender.currentTitle {
-            displayLabel.text = sign
-            num = ""
+        
+        isFinishTypingNumber = true
+        
+        switch sender.currentTitle! {
+        case "AC":
+            displayValue = 0
+            break
+        case "+/-":
+            displayValue *= -1
+            break
+        case "%":
+            displayValue /= 100
+            break
+        default:
+            print("oprator not found")
+            break
         }
-         isFinishTypingNumber = true
     }
-
+    
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
+        
         if let numberValue = sender.currentTitle {
-            if isFinishTypingNumber {
-                num  = num + numberValue
-                displayLabel.text = num
-                }
-            }
             
+            if isFinishTypingNumber {
+                displayLabel.text = numberValue
+                isFinishTypingNumber = false
+            } else {
+                if numberValue == "." {
+                    let isInt = floor(displayValue) == displayValue
+                    
+                    if !isInt {
+                        return
+                    }
+                }
+                displayLabel.text = displayLabel.text! + numberValue
+            }
+        }
     }
-
 }
 
 
