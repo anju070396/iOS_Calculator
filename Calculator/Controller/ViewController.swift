@@ -11,8 +11,11 @@ import Foundation
 
 class ViewController: UIViewController {
     
-    private var isFinishTypingNumber = true
+    @IBOutlet weak var displayLabel: UILabel!
     
+    private var isFinishTypingNumber = true
+    private var calculateManager = CalculationManager()
+  
     private var displayValue : Double {
         get {
             guard let number = Double(displayLabel.text!) else {
@@ -28,26 +31,16 @@ class ViewController: UIViewController {
         
     }
     
-    @IBOutlet weak var displayLabel: UILabel!
-    
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         isFinishTypingNumber = true
-        
-        switch sender.currentTitle! {
-        case "AC":
-            displayValue = 0
-            break
-        case "+/-":
-            displayValue *= -1
-            break
-        case "%":
-            displayValue /= 100
-            break
-        default:
-            print("oprator not found")
-            break
+        if let operation = sender.currentTitle {
+            calculateManager.setNumber(displayValue)
+            
+            if let ans = calculateManager.calculate(with: operation) {
+                displayValue = ans
+            }
         }
     }
     
